@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Conexões de Mercado 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .canvas-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        
+        #networkCanvas {
+            width: 100%;
+            height: 600px;
+            cursor: pointer;
+        }
+        
+        .info-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+        
+        .info-panel.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .info-panel h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+        
+        .info-panel p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .connection-list {
+            margin-top: 15px;
+        }
+        
+        .connection-item {
+            background: #f8f9ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .connection-item strong {
+            color: #667eea;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 0.9em;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .instructions {
+            text-align: center;
+            color: white;
+            margin-top: 15px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Mapa de Conexões de Mercado 2025</h1>
+        <p class="subtitle">Descubra relações inesperadas entre tendências de diferentes setores</p>
+        
+        <div class="canvas-container">
+            <canvas id="networkCanvas"></canvas>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #667eea;"></div>
+                <span>Tecnologia/IA</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f093fb;"></div>
+                <span>Criptomoedas</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4facfe;"></div>
+                <span>Commodities</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #43e97b;"></div>
+                <span>Consumo</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #fa709a;"></div>
+                <span>Política/Macro</span>
+            </div>
+        </div>
+        
+        <p class="instructions">👆 Clique nos nós para ver detalhes das conexões</p>
+        
+        <div id="infoPanel" class="info-panel"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+        const infoPanel = document.getElementById('infoPanel');
+        
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        const nodes = [
+            {
+                id: 1,
+                label: 'IA Generativa',
+                x: 300,
+                y: 150,
+                color: '#667eea',
+                category: 'Tecnologia/IA',
+                description: 'Explosão da IA generativa impulsionando demanda por GPUs e energia',
+                connections: ['Consumo de energia cresceu 40% com data centers de IA', 'Chips NVIDIA valorizaram 200% em 2024', 'Criptomoedas de IA (TAO, RENDER) ganharam tração']
+            },
+            {
+                id: 2,
+                label: 'Energia Verde',
+                x: 600,
+                y: 100,
+                color: '#4facfe',
+                category: 'Commodities',
+                description: 'Transição energética e demanda por commodities verdes',
+                connections: ['Lítio e cobalto em alta por veículos elétricos', 'IA aumenta eficiência de painéis solares', 'Mineração de Bitcoin migrando para energia renovável']
+            },
+            {
+                id: 3,
+                label: 'Cripto AI',
+                x: 500,
+                y: 250,
+                color: '#f093fb',
+                category: 'Criptomoedas',
+                description: 'Convergência entre blockchain e inteligência artificial',
+                connections: ['Tokens de GPU descentralizada (RENDER) explodiram', 'Bittensor (TAO) criando mercado de IA descentralizada', 'FET e OCEAN fundidas em ASI Alliance']
+            },
+            {
+                id: 4,
+                label: 'Incerteza Política',
+                x: 200,
+                y: 350,
+                color: '#fa709a',
+                category: 'Política/Macro',
+                description: 'Eleições e mudanças regulatórias globais',
+                connections: ['Volatilidade aumentou 35% em 2025', 'Políticas tarifárias afetando commodities', 'Regulação cripto incerta nos EUA']
+            },
+            {
+                id: 5,
+                label: 'Consumidor Cauteloso',
+                x: 700,
+                y: 350,
+                color: '#43e97b',
+                category: 'Consumo',
+                description: 'Mudança no comportamento de consumo pós-pandemia',
+                connections: ['Preferência por experiências vs produtos', 'E-commerce estável mas crescimento menor', 'Sustentabilidade influencia 60% das decisões']
+            },
+            {
+                id: 6,
+                label: 'Ouro Digital',
+                x: 400,
+                y: 450,
+                color: '#f093fb',
+                category: 'Criptomoedas',
+                description: 'Bitcoin como reserva de valor em tempos incertos',
+                connections: ['Correlação negativa com incerteza política', 'ETFs de Bitcoin captaram $50bi em 2024', 'Instituições adotando como hedge']
+            },
+            {
+                id: 7,
+                label: 'Chips & Semicondutores',
+                x: 150,
+                y: 200,
+                color: '#667eea',
+                category: 'Tecnologia/IA',
+                description: 'Guerra por semicondutores e soberania tecnológica',
+                connections: ['NVIDIA domina mercado de GPUs para IA', 'Tarifas afetando cadeia de suprimentos', 'Mineração cripto exige chips especializados']
+            },
+            {
+                id: 8,
+                label: 'Taxas de Juros',
+                x: 800,
+                y: 200,
+                color: '#fa709a',
+                category: 'Política/Macro',
+                description: 'Cenário de taxas mais altas por mais tempo',
+                connections: ['Pressiona ações de crescimento (tech)', 'Favorece commodities como hedge', 'Cripto volátil em ambiente de juros altos']
+            }
+        ];
+        
+        const edges = [
+            { from: 1, to: 3, strength: 0.9, label: 'IA impulsiona tokens de GPU' },
+            { from: 1, to: 2, strength: 0.8, label: 'Data centers precisam energia verde' },
+            { from: 1, to: 7, strength: 0.95, label: 'IA depende de chips avançados' },
+            { from: 3, to: 2, strength: 0.6, label: 'Mineração busca energia limpa' },
+            { from: 4, to: 6, strength: 0.7, label: 'Incerteza aumenta busca por Bitcoin' },
+            { from: 4, to: 8, strength: 0.85, label: 'Política influencia taxas' },
+            { from: 7, to: 3, strength: 0.7, label: 'Chips especializados para mineração' },
+            { from: 8, to: 5, strength: 0.75, label: 'Juros altos reduzem consumo' },
+            { from: 8, to: 3, strength: 0.65, label: 'Juros impactam apetite por risco' },
+            { from: 2, to: 5, strength: 0.7, label: 'Consumidor prioriza sustentabilidade' },
+            { from: 4, to: 2, strength: 0.6, label: 'Tarifas afetam commodities' },
+            { from: 6, to: 8, strength: 0.7, label: 'Bitcoin sensível a política monetária' }
+        ];
+        
+        let hoveredNode = null;
+        let selectedNode = null;
+        let animationFrame = 0;
+        
+        function drawNetwork() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            edges.forEach(edge => {
+                const fromNode = nodes.find(n => n.id === edge.from);
+                const toNode = nodes.find(n => n.id === edge.to);
+                
+                ctx.beginPath();
+                ctx.moveTo(fromNode.x, fromNode.y);
+                ctx.lineTo(toNode.x, toNode.y);
+                ctx.strokeStyle = `rgba(100, 100, 100, ${edge.strength * 0.3})`;
+                ctx.lineWidth = edge.strength * 3;
+                ctx.stroke();
+            });
+            
+            nodes.forEach(node => {
+                const isHovered = hoveredNode === node.id;
+                const isSelected = selectedNode === node.id;
+                const radius = isHovered || isSelected ? 55 : 45;
+                
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 15;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 5;
+                
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = node.color;
+                ctx.fill();
+                
+                if (isSelected) {
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 4;
+                    ctx.stroke();
+                }
+                
+                ctx.shadowColor = 'transparent';
+                
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 13px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                const words = node.label.split(' ');
+                if (words.length > 1) {
+                    ctx.fillText(words[0], node.x, node.y - 7);
+                    ctx.fillText(words.slice(1).join(' '), node.x, node.y + 7);
+                } else {
+                    ctx.fillText(node.label, node.x, node.y);
+                }
+            });
+            
+            animationFrame++;
+        }
+        
+        function getNodeAtPosition(x, y) {
+            return nodes.find(node => {
+                const dx = node.x - x;
+                const dy = node.y - y;
+                return Math.sqrt(dx * dx + dy * dy) < 45;
+            });
+        }
+        
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const node = getNodeAtPosition(x, y);
+            hoveredNode = node ? node.id : null;
+            canvas.style.cursor = node ? 'pointer' : 'default';
+            drawNetwork();
+        });
+        
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const node = getNodeAtPosition(x, y);
+            if (node) {
+                selectedNode = node.id;
+                showNodeInfo(node);
+            } else {
+                selectedNode = null;
+                infoPanel.classList.remove('active');
+            }
+            drawNetwork();
+        });
+        
+        function showNodeInfo(node) {
+            const connectedEdges = edges.filter(e => e.from === node.id || e.to === node.id);
+            
+            let html = `
+                <h2>${node.label}</h2>
+                <p><strong>Categoria:</strong> ${node.category}</p>
+                <p>${node.description}</p>
+                <div class="connection-list">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">🔗 Conexões Principais:</h3>
+            `;
+            
+            node.connections.forEach(conn => {
+                html += `<div class="connection-item"><strong>→</strong> ${conn}</div>`;
+            });
+            
+            html += `
+                    <h3 style="color: #667eea; margin-top: 15px; margin-bottom: 10px;">🌐 Relacionamentos no Mapa:</h3>
+            `;
+            
+            connectedEdges.forEach(edge => {
+                const otherNode = nodes.find(n => n.id === (edge.from === node.id ? edge.to : edge.from));
+                html += `<div class="connection-item"><strong>${otherNode.label}:</strong> ${edge.label}</div>`;
+            });
+            
+            html += '</div>';
+            
+            infoPanel.innerHTML = html;
+            infoPanel.classList.add('active');
+        }
+        
+        drawNetwork();
+        setInterval(drawNetwork, 50);
+    </script>
+</body>
+</html>
